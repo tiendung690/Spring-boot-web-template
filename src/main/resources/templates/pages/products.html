@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Tables</title>
+</head>
+<body>
+	<section layout:fragment="content">
+
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">Products</h1>
+				<ol class="breadcrumb">
+					<li><i class="fa fa-dashboard"></i> <a
+						th:href="@{/pages/dashboard}">Dashboard</a></li>
+					<li class="active"><i class="fa fa-table"></i> Products</li>
+				</ol>
+			</div>
+		</div>
+		<!-- /.row -->
+
+		<div class="row">
+			<div class="col-lg-12">
+				<a class="btn btn-primary" th:href="@{/pages/product}">Add
+					Product</a> <a class="btn btn-primary" th:href="@{/pages/pdf}"
+					target="_blank">View as PDF</a> <a class="btn btn-primary"
+					th:href="@{/pages/excel}">Export to Excel</a>
+
+				<button type="submit" class="btn btn-primary" data-toggle="modal"
+					data-target="#searchModal">Search</button>
+
+				<a class="btn btn-primary" th:href="@{/pages/products}">View All</a>
+
+				<hr />
+			</div>
+			<div class="col-lg-12">
+				<!-- <h2>Products</h2> -->
+				<div class="table-responsive">
+					<table class="table table-hover table-striped">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Name</th>
+								<th>Qty</th>
+								<th>Price</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="product : ${products}"> 
+								<td th:text="${product.id}">1</td>
+								<td th:text="${product.name}">ABCD</td>
+								<td th:text="${product.qty}">10</td>
+								<td
+									th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 2, 'COMMA')}">10000</td>
+									
+								 
+								<td><a th:href="@{/pages/product(id=${product.id})}"
+									class="btn btn-default"><span
+										class="glyphicon glyphicon-pencil" data-id="1B"></span></a>
+
+									
+									<a data-target="#deleteModal"
+									class="btn btn-default" data-toggle="modal"><span
+										class="glyphicon glyphicon-trash" id="btnDelete" th:onclick="'funcDeleteConfirmation(\'' + ${product.id} + '\', \'' + ${product.name} + '\', \'' + ${product.qty} + '\', \'' + ${product.price} + '\');'"></span></a>	
+									 
+                                </td>
+                                    
+							</tr>
+						</tbody>
+					</table>
+					<div class="row">
+						<div class="col-lg-6">
+							<div sd:pagination-summary="">info</div>
+						</div>
+						<div class="col-lg-6">
+							<nav class="pull-right">
+								<ul class="pagination" sd:pagination="aligned-links">
+									<!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+									<li class="disabled"><a href="#" aria-label="Previous"><span
+											aria-hidden="true">&laquo;</span></a></li>
+									<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /.row -->
+
+		<!-- modal -->
+
+		<!-- search modal -->
+		<div class="modal fade" id="searchModal" tabindex="-1" role="dialog"
+			aria-labelledby="deleteModal" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<form>
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="myModalLabel">Search</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<label for="name">Product Name </label>
+								<div>
+									<input type="text" class="form-control" name="name"
+										placeholder="Product Name" />
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" value="name" class="btn btn-default">Ok</button>
+							<button type="button" class="btn btn-primary"
+								data-dismiss="modal">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- ./search modal -->
+		
+		<!-- delete modal -->
+		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+			aria-labelledby="deleteModal" aria-hidden="true">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<form method="delete" th:method="delete">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="myModalLabel">Delete</h4>
+						</div>
+						<div class="form-group">
+							<!-- 
+							<label for="name" class="col-sm-2 control-label">Product
+								Name</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="id" th:field="*{id}"
+									placeholder="Product Name" />
+									<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+							</div>
+							 -->
+							<div class="modal-body">
+								<input type="hidden" name="_method" value="delete" />
+								<input type="text" class="form-control" id="id" th:text="${id}" />
+								<input type="text" class="form-control" id="name" th:text="${name}" />
+								<input type="text" class="form-control" id="qty" th:text="${qty}" />
+								<input type="text" class="form-control" id="price" th:text="${price}" />
+								<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+								<p>Are you sure want to delete this product?</p>
+								<h4 id="idProductDesc"></h4>
+							</div>	
+						</div>
+						<div class="modal-footer">
+							<button type="submit" value="name" class="btn btn-default">Ok</button>
+							<button type="button" class="btn btn-primary"
+								data-dismiss="modal">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- ./search modal -->
+		
+		<!-- ./modal -->
+
+	</section>
+</body>
+</html>
